@@ -12,12 +12,16 @@ import {
 import { Box } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import MobileNavBar from "./MobileNavBar";
+import LanguagePicker from "./LanguagePicker";
+import { useTranslation } from "react-i18next";
 
 const NavBar = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex justify-center items-center border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        {/* Лого и име на бранда */}
+        {/* logo + name */}
         <div className="flex items-center gap-2">
           <Box className="h-6 w-6 text-primary" />
           <NavLink to="/" className="font-bold text-lg">
@@ -25,19 +29,19 @@ const NavBar = () => {
           </NavLink>
         </div>
 
-        {/* Основно навигационно меню */}
+        {/* main menu */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <NavLink to="/" className={navigationMenuTriggerStyle()}>
-                  Home
+                  {t("nav.home")}
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Models</NavigationMenuTrigger>
+              <NavigationMenuTrigger>{t("nav.models")}</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                   <li className="row-span-3">
@@ -47,10 +51,10 @@ const NavBar = () => {
                         className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                       >
                         <div className="mb-2 mt-4 text-lg font-medium">
-                          Featured Models
+                          {t("models.featured")}
                         </div>
                         <p className="text-sm leading-tight text-muted-foreground">
-                          Check out our curated collection of premium 3D models
+                          {t("models.featuredDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -61,9 +65,11 @@ const NavBar = () => {
                         to="/models/architectural"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Architectural</div>
+                        <div className="text-sm font-medium">
+                          {t("models.architectural")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Buildings, landscapes and architectural elements
+                          {t("models.architecturalDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -74,9 +80,11 @@ const NavBar = () => {
                         to="/models/characters"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Characters</div>
+                        <div className="text-sm font-medium">
+                          {t("models.characters")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Figurines, characters and collectibles
+                          {t("models.charactersDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -87,9 +95,11 @@ const NavBar = () => {
                         to="/models/mechanical"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Mechanical</div>
+                        <div className="text-sm font-medium">
+                          {t("models.mechanical")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Functional parts, gears and mechanical components
+                          {t("models.mechanicalDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -99,7 +109,7 @@ const NavBar = () => {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Services</NavigationMenuTrigger>
+              <NavigationMenuTrigger>{t("nav.services")}</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px]">
                   <li>
@@ -108,9 +118,11 @@ const NavBar = () => {
                         to="/services/3d-printing"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">3D Printing</div>
+                        <div className="text-sm font-medium">
+                          {t("services.printing")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          High-quality printing services with various materials
+                          {t("services.printingDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -121,9 +133,11 @@ const NavBar = () => {
                         to="/services/custom-design"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Custom Design</div>
+                        <div className="text-sm font-medium">
+                          {t("services.customDesign")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Custom 3D modeling services for your specific needs
+                          {t("services.customDesignDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -134,9 +148,11 @@ const NavBar = () => {
                         to="/services/consultation"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Consultation</div>
+                        <div className="text-sm font-medium">
+                          {t("services.consultation")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Expert advice for your 3D printing projects
+                          {t("services.consultationDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -148,7 +164,7 @@ const NavBar = () => {
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <NavLink to="/pricing" className={navigationMenuTriggerStyle()}>
-                  Pricing
+                  {t("nav.pricing")}
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -156,7 +172,7 @@ const NavBar = () => {
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <NavLink to="/contact" className={navigationMenuTriggerStyle()}>
-                  Contact
+                  {t("nav.contact")}
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -166,12 +182,13 @@ const NavBar = () => {
         {/* Бутони за вход и ModeToggle */}
         <div className="hidden md:flex items-center gap-4">
           <Button variant="ghost" asChild>
-            <NavLink to="/sign-in">Sign In</NavLink>
+            <NavLink to="/sign-in">{t("nav.signIn")}</NavLink>
           </Button>
           <Button asChild>
-            <NavLink to="/sign-up">Sign Up</NavLink>
+            <NavLink to="/sign-up">{t("nav.signUp")}</NavLink>
           </Button>
           <ModeToggle />
+          <LanguagePicker />
         </div>
 
         {/* Mobile nav */}
