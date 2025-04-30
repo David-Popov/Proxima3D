@@ -9,13 +9,15 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "../components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
 import { Box } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
+import MobileNavBar from "./MobileNavBar";
 
 const NavBar = () => {
   return (
     <div className="flex justify-center items-center border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
+        {/* Лого и име на бранда */}
         <div className="flex items-center gap-2">
           <Box className="h-6 w-6 text-primary" />
           <NavLink to="/" className="font-bold text-lg">
@@ -23,6 +25,7 @@ const NavBar = () => {
           </NavLink>
         </div>
 
+        {/* Основно навигационно меню */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -160,6 +163,7 @@ const NavBar = () => {
           </NavigationMenuList>
         </NavigationMenu>
 
+        {/* Бутони за вход и ModeToggle */}
         <div className="hidden md:flex items-center gap-4">
           <Button variant="ghost" asChild>
             <NavLink to="/sign-in">Sign In</NavLink>
@@ -167,82 +171,11 @@ const NavBar = () => {
           <Button asChild>
             <NavLink to="/sign-up">Sign Up</NavLink>
           </Button>
+          <ModeToggle />
         </div>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="md:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-5 w-5"
-              >
-                <line x1="4" x2="20" y1="12" y2="12" />
-                <line x1="4" x2="20" y1="6" y2="6" />
-                <line x1="4" x2="20" y1="18" y2="18" />
-              </svg>
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right">
-            <div className="grid gap-6 py-6">
-              <div className="grid gap-3">
-                <NavLink to="/" className="text-lg font-semibold">
-                  Home
-                </NavLink>
-                <NavLink to="/models" className="text-lg font-semibold">
-                  Models
-                </NavLink>
-                <div className="ml-4 grid gap-2">
-                  <NavLink to="/models/architectural" className="text-sm">
-                    Architectural
-                  </NavLink>
-                  <NavLink to="/models/characters" className="text-sm">
-                    Characters
-                  </NavLink>
-                  <NavLink to="/models/mechanical" className="text-sm">
-                    Mechanical
-                  </NavLink>
-                </div>
-                <NavLink to="/services" className="text-lg font-semibold">
-                  Services
-                </NavLink>
-                <div className="ml-4 grid gap-2">
-                  <NavLink to="/services/3d-printing" className="text-sm">
-                    3D Printing
-                  </NavLink>
-                  <NavLink to="/services/custom-design" className="text-sm">
-                    Custom Design
-                  </NavLink>
-                  <NavLink to="/services/consultation" className="text-sm">
-                    Consultation
-                  </NavLink>
-                </div>
-                <NavLink to="/pricing" className="text-lg font-semibold">
-                  Pricing
-                </NavLink>
-                <NavLink to="/contact" className="text-lg font-semibold">
-                  Contact
-                </NavLink>
-              </div>
-              <div className="grid gap-3">
-                <Button variant="outline" asChild className="w-full">
-                  <NavLink to="/sign-in">Sign In</NavLink>
-                </Button>
-                <Button asChild className="w-full">
-                  <NavLink to="/sign-up">Sign Up</NavLink>
-                </Button>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Mobile nav */}
+        <MobileNavBar />
       </div>
     </div>
   );
