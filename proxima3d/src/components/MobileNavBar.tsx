@@ -1,5 +1,4 @@
 import { NavLink } from "react-router";
-import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -7,12 +6,20 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "./ui/sheet";
-import { Box } from "lucide-react";
+import { Box, X } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
+import LanguagePicker from "./LanguagePicker";
+import { useTranslation } from "react-i18next";
 
 const MobileNavBar = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex items-center gap-2 md:hidden">
+      <LanguagePicker />
+      <ModeToggle />
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon">
@@ -32,7 +39,7 @@ const MobileNavBar = () => {
               <line x1="4" x2="20" y1="6" y2="6" />
               <line x1="4" x2="20" y1="18" y2="18" />
             </svg>
-            <span className="sr-only">Toggle menu</span>
+            <span className="sr-only">{t("common.toggleMenu")}</span>
           </Button>
         </SheetTrigger>
         <SheetContent
@@ -47,60 +54,68 @@ const MobileNavBar = () => {
                   <Box className="h-5 w-5 text-primary" />
                   <span>Proxima3D</span>
                 </div>
+                <SheetClose className="rounded-full h-8 w-8 flex items-center justify-center border">
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">{t("common.close")}</span>
+                </SheetClose>
               </SheetTitle>
             </SheetHeader>
 
-            {/* mobile content */}
+            {/* content*/}
             <div className="flex-1 overflow-auto">
               <div className="flex flex-col">
                 <NavLink
                   to="/"
                   className="px-6 py-4 text-lg font-medium border-b"
                 >
-                  Home
+                  {t("nav.home")}
                 </NavLink>
 
                 <div className="border-b">
-                  <div className="px-6 py-4 text-lg font-medium">Models</div>
+                  <div className="px-6 py-4 text-lg font-medium">
+                    {t("nav.models")}
+                  </div>
                   <NavLink
                     to="/models/architectural"
                     className="block px-10 py-3 text-base text-muted-foreground"
                   >
-                    Architectural
+                    {t("models.architectural")}
                   </NavLink>
                   <NavLink
                     to="/models/characters"
                     className="block px-10 py-3 text-base text-muted-foreground"
                   >
-                    Characters
+                    {t("models.characters")}
                   </NavLink>
                   <NavLink
                     to="/models/mechanical"
                     className="block px-10 py-3 text-base text-muted-foreground"
                   >
-                    Mechanical
+                    {t("models.mechanical")}
                   </NavLink>
                 </div>
 
                 <div className="border-b">
-                  <div className="px-6 py-4 text-lg font-medium">Services</div>
+                  <div className="px-6 py-4 text-lg font-medium">
+                    {t("nav.services")}
+                  </div>
                   <NavLink
                     to="/services/3d-printing"
                     className="block px-10 py-3 text-base text-muted-foreground"
                   >
-                    3D Printing
+                    {t("services.printing")}
                   </NavLink>
                   <NavLink
                     to="/services/custom-design"
                     className="block px-10 py-3 text-base text-muted-foreground"
                   >
-                    Custom Design
+                    {t("services.customDesign")}
                   </NavLink>
                   <NavLink
                     to="/services/consultation"
                     className="block px-10 py-3 text-base text-muted-foreground"
                   >
-                    Consultation
+                    {t("services.consultation")}
                   </NavLink>
                 </div>
 
@@ -108,30 +123,26 @@ const MobileNavBar = () => {
                   to="/pricing"
                   className="px-6 py-4 text-lg font-medium border-b"
                 >
-                  Pricing
+                  {t("nav.pricing")}
                 </NavLink>
 
                 <NavLink
                   to="/contact"
                   className="px-6 py-4 text-lg font-medium border-b"
                 >
-                  Contact
+                  {t("nav.contact")}
                 </NavLink>
               </div>
             </div>
 
-            {/* auth + other buttons */}
+            {/* buttons */}
             <div className="p-6 border-t">
-              <div className="flex flex-col gap-3">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium">Appearance</span>
-                  <ModeToggle />
-                </div>
+              <div className="grid gap-3">
                 <Button variant="outline" asChild className="w-full h-11">
-                  <NavLink to="/sign-in">Sign In</NavLink>
+                  <NavLink to="/sign-in">{t("nav.signIn")}</NavLink>
                 </Button>
                 <Button asChild className="w-full h-11">
-                  <NavLink to="/sign-up">Sign Up</NavLink>
+                  <NavLink to="/sign-up">{t("nav.signUp")}</NavLink>
                 </Button>
               </div>
             </div>
