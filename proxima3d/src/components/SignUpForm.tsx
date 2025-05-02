@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { cn } from "../lib/utils";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -10,10 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import { SignUpFormRequest } from "../types/AuthType";
+import { toast } from "sonner";
+import { Toaster } from "./ui/sonner";
+import { useAuth } from "../contexts/AuthContext";
 
-// Масив от държави и градове - след това ще бъдат преведени
 const countries = [
   {
     id: "us",
@@ -46,11 +49,25 @@ export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const auth = useAuth();
   const { t } = useTranslation();
   const [selectedCountry, setSelectedCountry] = useState("");
   const [cities, setCities] = useState<string[]>([]);
+  const [formData, setFormData] = useState<SignUpFormRequest>({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+    lastname: "",
+    country: "",
+    city: "",
+    phone: "",
+    is_printer: false,
+    avatartUrl: "",
+  });
 
-  // Локализирана версия на държавите, която ще използва преводи за имената на държавите
+  const navigate = useNavigate();
+
   const localizedCountries = countries.map((country) => ({
     ...country,
     name: t(`countries.${country.id}`, country.name),
@@ -59,11 +76,73 @@ export function SignUpForm({
   const handleCountryChange = (countryId: string) => {
     setSelectedCountry(countryId);
     const country = countries.find((c) => c.id === countryId);
+    setFormData({ ...formData, country: country!.name });
     setCities(country?.cities || []);
   };
 
+  const handleCityChange = (city: string) => {
+    setFormData({ ...formData, city });
+  };
+
+  async function handleSignUp(e: FormEvent) {
+    e.preventDefault();
+
+    formDataValidation();
+    const data = await auth.signUpNewUser(formData);
+    console.log(data.success);
+    if (data.success) {
+      toast("Succesful login!");
+      setTimeout(() => {}, 1000);
+      navigate("/sign-in");
+    }
+  }
+
+  const formDataValidation = () => {
+    if (formData.name == "" || formData.name == null) {
+      toast("Please enter First Name!");
+      return;
+    }
+    if (formData.lastname == "" || formData.lastname == null) {
+      toast("Please enter Last Name!");
+      return;
+    }
+    if (formData.email == "" || formData.email == null) {
+      toast("Please enter Email!");
+      return;
+    }
+    if (formData.country == "" || formData.country == null) {
+      toast("Please select Country!");
+      return;
+    }
+    if (formData.city == "" || formData.city == null) {
+      toast("Please select City!");
+      return;
+    }
+    if (formData.password == "" || formData.password == null) {
+      toast("Please type Password!");
+      return;
+    }
+    if (formData.password.length < 6) {
+      toast("Password must be at least 6 characters!");
+      return;
+    }
+    if (formData.confirmPassword == "" || formData.confirmPassword == null) {
+      toast("Please type Confrim Password!");
+      return;
+    }
+
+    if (formData.confirmPassword !== formData.password) {
+      toast("Password and Confirm Password does not match!");
+      return;
+    }
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+      onSubmit={(e) => handleSignUp(e)}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">{t("auth.signUp.title")}</h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -77,6 +156,9 @@ export function SignUpForm({
             <Input
               id="firstName"
               placeholder={t("common.placeholders.firstName")}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
             />
           </div>
@@ -85,13 +167,47 @@ export function SignUpForm({
             <Input
               id="lastName"
               placeholder={t("common.placeholders.lastName")}
+              onChange={(e) =>
+                setFormData({ ...formData, lastname: e.target.value })
+              }
               required
             />
           </div>
         </div>
         <div className="grid gap-2">
+          <Label htmlFor="phone">{t("auth.signUp.phone")}</Label>
+          <Input
+            id="phone"
+            type="phone"
+            placeholder={t("common.placeholders.phone")}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
+            }
+            required
+          />
+        </div>
+        <div className="grid gap-2">
           <Label htmlFor="email">{t("auth.signUp.email")}</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            required
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="avatarUrl">{t("auth.signUp.avatarUrl")}</Label>
+          <Input
+            id="avatarUrl"
+            type="text"
+            placeholder=""
+            onChange={(e) =>
+              setFormData({ ...formData, avatartUrl: e.target.value })
+            }
+          />
         </div>
         <div className="flex flex-col gap-6 w-full">
           <div className="w-full">
@@ -111,7 +227,10 @@ export function SignUpForm({
           </div>
           <div className="w-full">
             <Label htmlFor="city">{t("common.city")}</Label>
-            <Select disabled={!selectedCountry}>
+            <Select
+              disabled={!selectedCountry}
+              onValueChange={handleCityChange}
+            >
               <SelectTrigger id="city" className="h-12 w-full mt-2">
                 <SelectValue
                   placeholder={
@@ -137,6 +256,9 @@ export function SignUpForm({
             id="password"
             type="password"
             placeholder={t("common.placeholders.createPassword")}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
             required
           />
           <p className="text-xs text-muted-foreground">
@@ -151,6 +273,9 @@ export function SignUpForm({
             id="confirmPassword"
             type="password"
             placeholder={t("common.placeholders.confirmPassword")}
+            onChange={(e) =>
+              setFormData({ ...formData, confirmPassword: e.target.value })
+            }
             required
           />
         </div>
@@ -197,6 +322,7 @@ export function SignUpForm({
           {t("auth.signIn.submit")}
         </NavLink>
       </div>
+      <Toaster />
     </form>
   );
 }

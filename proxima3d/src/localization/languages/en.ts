@@ -8,6 +8,8 @@ export const en = {
     contact: "Contact",
     signIn: "Sign In",
     signUp: "Sign Up",
+    signOut: "Sign Out",
+    profile: "Profile",
     appearance: "Appearance",
   },
 
@@ -95,6 +97,8 @@ export const en = {
       passwordRequirements: "Password must be at least 8 characters long",
       termsAndConditions: "I agree to the terms of service and privacy policy",
       submit: "Sign Up",
+      avatarUrl: "Profile picture",
+      phone: "Phone",
     },
   },
 
@@ -136,6 +140,7 @@ export const en = {
       lastName: "Doe",
       createPassword: "Create a secure password",
       confirmPassword: "Confirm your password",
+      phone: "0889345960",
     },
   },
 

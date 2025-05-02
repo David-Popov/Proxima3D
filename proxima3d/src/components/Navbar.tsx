@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { Button } from "../components/ui/button";
 import {
   NavigationMenu,
@@ -14,12 +14,43 @@ import { ModeToggle } from "./mode-toggle";
 import MobileNavBar from "./MobileNavBar";
 import LanguagePicker from "./LanguagePicker";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
+import { useEffect, useState } from "react";
 
 const NavBar = () => {
   const { t } = useTranslation();
+  const auth = useAuth();
+  const [visible, setVisible] = useState(true);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+
+      setVisible(currentScrollPos === 0);
+
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [prevScrollPos]);
 
   return (
-    <div className="flex justify-center items-center border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div
+      className={`flex justify-center items-center border-b w-full bg-background z-50 transition-transform duration-300 ${
+        visible ? "translate-y-0" : "-translate-y-full"
+      }`}
+      style={{ position: "fixed", top: 0, left: 0, right: 0 }}
+    >
       <div className="container flex h-16 items-center justify-between">
         {/* logo + name */}
         <div className="flex items-center gap-2">
@@ -42,7 +73,7 @@ const NavBar = () => {
 
             <NavigationMenuItem>
               <NavigationMenuTrigger>{t("nav.models")}</NavigationMenuTrigger>
-              <NavigationMenuContent>
+              <NavigationMenuContent className="bg-background border rounded-none shadow-md p-0">
                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
@@ -163,14 +194,6 @@ const NavBar = () => {
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <NavLink to="/pricing" className={navigationMenuTriggerStyle()}>
-                  {t("nav.pricing")}
-                </NavLink>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
                 <NavLink to="/contact" className={navigationMenuTriggerStyle()}>
                   {t("nav.contact")}
                 </NavLink>
@@ -181,12 +204,39 @@ const NavBar = () => {
 
         {/* Бутони за вход и ModeToggle */}
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" asChild>
-            <NavLink to="/sign-in">{t("nav.signIn")}</NavLink>
-          </Button>
-          <Button asChild>
-            <NavLink to="/sign-up">{t("nav.signUp")}</NavLink>
-          </Button>
+          {auth.session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="border-none">
+                  {auth.session.user.email}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem>
+                  <Link to="/profile" className="w-full">
+                    {t("nav.profile")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => auth.signOut()}
+                >
+                  {t("nav.signOut")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <NavLink to="/sign-in">{t("nav.signIn")}</NavLink>
+              </Button>
+              <Button asChild>
+                <NavLink to="/sign-up">{t("nav.signUp")}</NavLink>
+              </Button>
+            </>
+          )}
+
           <ModeToggle />
           <LanguagePicker />
         </div>

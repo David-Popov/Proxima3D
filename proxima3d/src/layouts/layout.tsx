@@ -4,7 +4,7 @@ const Layout = () => {
   return (
     <div>
       <NavBar />
-      <div>
+      <div className="pt-14">
         <Outlet />
       </div>
     </div>

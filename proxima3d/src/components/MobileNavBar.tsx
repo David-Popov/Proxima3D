@@ -12,9 +12,11 @@ import { Box, X } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import LanguagePicker from "./LanguagePicker";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
 
 const MobileNavBar = () => {
   const { t } = useTranslation();
+  const auth = useAuth();
 
   return (
     <div className="flex items-center gap-2 md:hidden">
@@ -135,15 +137,36 @@ const MobileNavBar = () => {
               </div>
             </div>
 
-            {/* buttons */}
             <div className="p-6 border-t">
               <div className="grid gap-3">
-                <Button variant="outline" asChild className="w-full h-11">
-                  <NavLink to="/sign-in">{t("nav.signIn")}</NavLink>
-                </Button>
-                <Button asChild className="w-full h-11">
-                  <NavLink to="/sign-up">{t("nav.signUp")}</NavLink>
-                </Button>
+                {auth.session ? (
+                  <>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">
+                        {auth.session.user.email}
+                      </span>
+                    </div>
+                    <Button variant="outline" asChild className="w-full h-11">
+                      <NavLink to="/profile">{t("nav.profile")}</NavLink>
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      className="w-full h-11"
+                      onClick={() => auth.signOut()}
+                    >
+                      {t("nav.signOut")}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" asChild className="w-full h-11">
+                      <NavLink to="/sign-in">{t("nav.signIn")}</NavLink>
+                    </Button>
+                    <Button asChild className="w-full h-11">
+                      <NavLink to="/sign-up">{t("nav.signUp")}</NavLink>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
