@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { Button } from "../components/ui/button";
 import {
   NavigationMenu,
@@ -9,13 +9,50 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "../components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
 import { Box } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
+import MobileNavBar from "./MobileNavBar";
+import LanguagePicker from "./LanguagePicker";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
+import { useEffect, useState } from "react";
 
 const NavBar = () => {
+  const { t } = useTranslation();
+  const auth = useAuth();
+  const [visible, setVisible] = useState(true);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+
+      setVisible(currentScrollPos === 0);
+
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [prevScrollPos]);
+
   return (
-    <div className="flex justify-center items-center border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div
+      className={`flex justify-center items-center border-b w-full bg-background z-50 transition-transform duration-300 ${
+        visible ? "translate-y-0" : "-translate-y-full"
+      }`}
+      style={{ position: "fixed", top: 0, left: 0, right: 0 }}
+    >
       <div className="container flex h-16 items-center justify-between">
+        {/* logo + name */}
         <div className="flex items-center gap-2">
           <Box className="h-6 w-6 text-primary" />
           <NavLink to="/" className="font-bold text-lg">
@@ -23,19 +60,20 @@ const NavBar = () => {
           </NavLink>
         </div>
 
+        {/* main menu */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <NavLink to="/" className={navigationMenuTriggerStyle()}>
-                  Home
+                  {t("nav.home")}
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Models</NavigationMenuTrigger>
-              <NavigationMenuContent>
+              <NavigationMenuTrigger>{t("nav.models")}</NavigationMenuTrigger>
+              <NavigationMenuContent className="bg-background border rounded-none shadow-md p-0">
                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
@@ -44,10 +82,10 @@ const NavBar = () => {
                         className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                       >
                         <div className="mb-2 mt-4 text-lg font-medium">
-                          Featured Models
+                          {t("models.featured")}
                         </div>
                         <p className="text-sm leading-tight text-muted-foreground">
-                          Check out our curated collection of premium 3D models
+                          {t("models.featuredDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -58,9 +96,11 @@ const NavBar = () => {
                         to="/models/architectural"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Architectural</div>
+                        <div className="text-sm font-medium">
+                          {t("models.architectural")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Buildings, landscapes and architectural elements
+                          {t("models.architecturalDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -71,9 +111,11 @@ const NavBar = () => {
                         to="/models/characters"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Characters</div>
+                        <div className="text-sm font-medium">
+                          {t("models.characters")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Figurines, characters and collectibles
+                          {t("models.charactersDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -84,9 +126,11 @@ const NavBar = () => {
                         to="/models/mechanical"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Mechanical</div>
+                        <div className="text-sm font-medium">
+                          {t("models.mechanical")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Functional parts, gears and mechanical components
+                          {t("models.mechanicalDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -96,7 +140,7 @@ const NavBar = () => {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Services</NavigationMenuTrigger>
+              <NavigationMenuTrigger>{t("nav.services")}</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px]">
                   <li>
@@ -105,9 +149,11 @@ const NavBar = () => {
                         to="/services/3d-printing"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">3D Printing</div>
+                        <div className="text-sm font-medium">
+                          {t("services.printing")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          High-quality printing services with various materials
+                          {t("services.printingDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -118,9 +164,11 @@ const NavBar = () => {
                         to="/services/custom-design"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Custom Design</div>
+                        <div className="text-sm font-medium">
+                          {t("services.customDesign")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Custom 3D modeling services for your specific needs
+                          {t("services.customDesignDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -131,9 +179,11 @@ const NavBar = () => {
                         to="/services/consultation"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
-                        <div className="text-sm font-medium">Consultation</div>
+                        <div className="text-sm font-medium">
+                          {t("services.consultation")}
+                        </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Expert advice for your 3D printing projects
+                          {t("services.consultationDescription")}
                         </p>
                       </NavLink>
                     </NavigationMenuLink>
@@ -144,105 +194,55 @@ const NavBar = () => {
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <NavLink to="/pricing" className={navigationMenuTriggerStyle()}>
-                  Pricing
-                </NavLink>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
                 <NavLink to="/contact" className={navigationMenuTriggerStyle()}>
-                  Contact
+                  {t("nav.contact")}
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 
+        {/* Бутони за вход и ModeToggle */}
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" asChild>
-            <NavLink to="/sign-in">Sign In</NavLink>
-          </Button>
-          <Button asChild>
-            <NavLink to="/sign-up">Sign Up</NavLink>
-          </Button>
+          {auth.session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="border-none">
+                  {auth.session.user.email}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem>
+                  <Link to="/profile" className="w-full">
+                    {t("nav.profile")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => auth.signOut()}
+                >
+                  {t("nav.signOut")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <NavLink to="/sign-in">{t("nav.signIn")}</NavLink>
+              </Button>
+              <Button asChild>
+                <NavLink to="/sign-up">{t("nav.signUp")}</NavLink>
+              </Button>
+            </>
+          )}
+
+          <ModeToggle />
+          <LanguagePicker />
         </div>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="md:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-5 w-5"
-              >
-                <line x1="4" x2="20" y1="12" y2="12" />
-                <line x1="4" x2="20" y1="6" y2="6" />
-                <line x1="4" x2="20" y1="18" y2="18" />
-              </svg>
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right">
-            <div className="grid gap-6 py-6">
-              <div className="grid gap-3">
-                <NavLink to="/" className="text-lg font-semibold">
-                  Home
-                </NavLink>
-                <NavLink to="/models" className="text-lg font-semibold">
-                  Models
-                </NavLink>
-                <div className="ml-4 grid gap-2">
-                  <NavLink to="/models/architectural" className="text-sm">
-                    Architectural
-                  </NavLink>
-                  <NavLink to="/models/characters" className="text-sm">
-                    Characters
-                  </NavLink>
-                  <NavLink to="/models/mechanical" className="text-sm">
-                    Mechanical
-                  </NavLink>
-                </div>
-                <NavLink to="/services" className="text-lg font-semibold">
-                  Services
-                </NavLink>
-                <div className="ml-4 grid gap-2">
-                  <NavLink to="/services/3d-printing" className="text-sm">
-                    3D Printing
-                  </NavLink>
-                  <NavLink to="/services/custom-design" className="text-sm">
-                    Custom Design
-                  </NavLink>
-                  <NavLink to="/services/consultation" className="text-sm">
-                    Consultation
-                  </NavLink>
-                </div>
-                <NavLink to="/pricing" className="text-lg font-semibold">
-                  Pricing
-                </NavLink>
-                <NavLink to="/contact" className="text-lg font-semibold">
-                  Contact
-                </NavLink>
-              </div>
-              <div className="grid gap-3">
-                <Button variant="outline" asChild className="w-full">
-                  <NavLink to="/sign-in">Sign In</NavLink>
-                </Button>
-                <Button asChild className="w-full">
-                  <NavLink to="/sign-up">Sign Up</NavLink>
-                </Button>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Mobile nav */}
+        <MobileNavBar />
       </div>
     </div>
   );
