@@ -16,7 +16,6 @@ const resources = {
 
 const init18next = () => {
   let savedLanguage = localStorage.getItem("language");
-  console.log("language: ", savedLanguage);
   if (!savedLanguage) {
     savedLanguage = "en";
   }

@@ -9,6 +9,8 @@ export const bg: TranslationType = {
     contact: "Контакти",
     signIn: "Вход",
     signUp: "Регистрация",
+    signOut: "Разлогване",
+    profile: "Профил",
     appearance: "Изглед",
   },
 
@@ -96,6 +98,8 @@ export const bg: TranslationType = {
       termsAndConditions:
         "Съгласен съм с условията за ползване и политиката за поверителност",
       submit: "Регистрация",
+      avatarUrl: "Профилна снимка",
+      phone: "Телефонен номер",
     },
   },
 
@@ -138,6 +142,7 @@ export const bg: TranslationType = {
       lastName: "Петров",
       createPassword: "Създайте сигурна парола",
       confirmPassword: "Потвърдете паролата си",
+      phone: "0889345960",
     },
   },
 
